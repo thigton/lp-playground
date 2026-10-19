@@ -1,0 +1,25 @@
+[project]
+name = "lp-playground"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "thigton", email = "thigton@googlemail.com" }
+]
+requires-python = ">=3.13"
+dependencies = [
+    "highspy>=1.15.1",
+    "matplotlib>=3.11.2",
+    "numpy>=2.5.3",
+    "pandas>=3.0.6",
+    "pint>=0.26.1",
+    "pyomo>=6.10.1",
+    "ruff>=0.16.9",
+]
+
+[project.scripts]
+lp-playground = "lp_playground:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
