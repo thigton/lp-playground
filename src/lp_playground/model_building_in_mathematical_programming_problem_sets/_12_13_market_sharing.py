@@ -187,14 +187,16 @@ def _add_constraints(model):
 
     model.dev_upper = pyo.Constraint(
         model.criteria,
-        rule=lambda _m, crit: _d1_share(_m, crit) - _m.d1_control_target
-        <= _m.dev[crit],
+        rule=lambda _m, crit: (
+            _d1_share(_m, crit) - _m.d1_control_target <= _m.dev[crit]
+        ),
     )
 
     model.dev_lower = pyo.Constraint(
         model.criteria,
-        rule=lambda _m, crit: _m.d1_control_target - _d1_share(_m, crit)
-        <= _m.dev[crit],
+        rule=lambda _m, crit: (
+            _m.d1_control_target - _d1_share(_m, crit) <= _m.dev[crit]
+        ),
     )
 
     model.max_dev_link = pyo.Constraint(

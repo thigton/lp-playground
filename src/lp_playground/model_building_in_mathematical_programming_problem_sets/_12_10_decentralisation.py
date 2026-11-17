@@ -41,13 +41,13 @@ import itertools
 from collections import defaultdict
 
 COMM_COST = {
-            ("Bristol", "Bristol"): 5,
-            ("Bristol", "Brighton"): 14,
-            ("Bristol", "London"): 13,
-            ("Brighton", "Brighton"): 5,
-            ("Brighton", "London"): 9,
-            ("London", "London"): 10,
-        }
+    ("Bristol", "Bristol"): 5,
+    ("Bristol", "Brighton"): 14,
+    ("Bristol", "London"): 13,
+    ("Brighton", "Brighton"): 5,
+    ("Brighton", "London"): 9,
+    ("London", "London"): 10,
+}
 
 
 def _add_sets(model):
@@ -94,8 +94,9 @@ def _add_params(model):
     model.cost_per_comm = pyo.Param(
         model.locations,
         model.locations,
-        initialize=lambda _m, l1, l2: \
-            COMM_COST.get((l1, l2), COMM_COST.get((l2, l1), 0)),
+        initialize=lambda _m, l1, l2: COMM_COST.get(
+            (l1, l2), COMM_COST.get((l2, l1), 0)
+        ),
     )
 
     model.max_departments_per_city = pyo.Param(initialize=3)
@@ -113,16 +114,15 @@ def _add_constraints(model):
     # department can only be in 1 city
     model.department_loc_unique = pyo.Constraint(
         model.departments,
-        rule=lambda _m, dep: sum(_m.relocation[loc, dep] for loc in _m.locations)
-        == 1,
+        rule=lambda _m, dep: sum(_m.relocation[loc, dep] for loc in _m.locations) == 1,
     )
 
     model.department_per_city = pyo.Constraint(
         model.locations,
-        rule=lambda _m, loc: sum(
-            _m.relocation[loc, dep] for dep in _m.departments
-        )
-        <= _m.max_departments_per_city,
+        rule=lambda _m, loc: (
+            sum(_m.relocation[loc, dep] for dep in _m.departments)
+            <= _m.max_departments_per_city
+        ),
     )
 
 
@@ -182,8 +182,8 @@ def _add_objective(model):
     model.comm_cost = pyo.Expression(rule=comm_cost_rule)
 
     model.OBJ = pyo.Objective(
-        expr=model.total_relocation_benefit - model.comm_cost,
-        sense=pyo.maximize)
+        expr=model.total_relocation_benefit - model.comm_cost, sense=pyo.maximize
+    )
 
 
 def main():
@@ -201,8 +201,6 @@ def main():
         if pyo.value(model.relocation[loc, dep]) > 0.5:
             locations[loc].append(dep)
     print(locations)
-
-
 
 
 if __name__ == "__main__":

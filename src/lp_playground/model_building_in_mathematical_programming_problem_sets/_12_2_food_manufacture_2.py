@@ -29,8 +29,9 @@ def _add_binary_constraints(block):
 
     block.oil_used_link = pyo.Constraint(
         model.oils,
-        rule=lambda _block, oil: _block.oil_refined[oil]
-        <= model.oil_inventory_limit * _block.use_oil[oil],
+        rule=lambda _block, oil: (
+            _block.oil_refined[oil] <= model.oil_inventory_limit * _block.use_oil[oil]
+        ),
     )
 
     block.max_oils_in_blend = pyo.Constraint(
@@ -41,8 +42,9 @@ def _add_binary_constraints(block):
     block.min_oil_tonne_used = pyo.Constraint(
         model.oils,
         name="Use 20T minimum",
-        rule=lambda _block, oil: _block.oil_refined[oil]
-        >= model.min_oil_use * _block.use_oil[oil],
+        rule=lambda _block, oil: (
+            _block.oil_refined[oil] >= model.min_oil_use * _block.use_oil[oil]
+        ),
     )
 
     block.oil_3_logical = pyo.Constraint(

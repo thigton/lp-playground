@@ -56,8 +56,9 @@ def add_constraints(month_block: pyo.Block, month: str):
 
     month_block.market_demand_limit = pyo.Constraint(
         model.products,
-        expr=lambda _block, product: _block.product_sold[product]
-        <= model.market_demand[month, product],
+        expr=lambda _block, product: (
+            _block.product_sold[product] <= model.market_demand[month, product]
+        ),
     )
 
 

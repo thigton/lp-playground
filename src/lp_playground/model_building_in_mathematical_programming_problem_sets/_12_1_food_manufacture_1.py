@@ -195,8 +195,9 @@ def _add_constraints(month_block):
 def add_inventory_constraints(model):
     model.final_inventory = pyo.Constraint(
         model.oils,
-        rule=lambda _model, oil: _model.month[_model.months.last()].oil_inventory[oil]
-        == 500,
+        rule=lambda _model, oil: (
+            _model.month[_model.months.last()].oil_inventory[oil] == 500
+        ),
     )
 
     def _inventory_balance_rule(_model, month, oil):

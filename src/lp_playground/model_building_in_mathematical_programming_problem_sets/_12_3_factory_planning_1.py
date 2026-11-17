@@ -222,8 +222,9 @@ def add_constraints(month_block: pyo.Block, month: str):
 
     month_block.market_demand_limit = pyo.Constraint(
         model.products,
-        expr=lambda _block, product: _block.product_sold[product]
-        <= model.market_demand[month, product],
+        expr=lambda _block, product: (
+            _block.product_sold[product] <= model.market_demand[month, product]
+        ),
     )
 
 
@@ -231,8 +232,9 @@ def add_expressions(month_block: pyo.Block) -> None:
     model = month_block.model()
     month_block.sales_profit_by_product = pyo.Expression(
         model.products,
-        expr=lambda _block, product: model.product_profit[product]
-        * month_block.product_sold[product],
+        expr=lambda _block, product: (
+            model.product_profit[product] * month_block.product_sold[product]
+        ),
     )
     month_block.sales_profit = pyo.Expression(
         expr=sum(
@@ -257,10 +259,10 @@ def build_month_model(block: pyo.Block, month: str):
 def add_inventory_constraints(model):
     model.final_inventory = pyo.Constraint(
         model.products,
-        rule=lambda _model, product: _model.month[
-            _model.months.last()
-        ].product_inventory[product]
-        == model.final_inventory_per_product,
+        rule=lambda _model, product: (
+            _model.month[_model.months.last()].product_inventory[product]
+            == model.final_inventory_per_product
+        ),
     )
 
     def _inventory_balance_rule(_model, month, product):

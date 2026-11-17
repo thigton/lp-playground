@@ -134,23 +134,27 @@ def _mine_constraints(model):
     model.mine_production_link = pyo.Constraint(
         model.mines,
         model.years,
-        rule=lambda _m, mine, year: _m.mine_production[mine, year]
-        <= _m.mine_ore_production_upper[mine] * _m.mine_worked[mine, year],
+        rule=lambda _m, mine, year: (
+            _m.mine_production[mine, year]
+            <= _m.mine_ore_production_upper[mine] * _m.mine_worked[mine, year]
+        ),
     )
 
     # Max 3 mines worked per year
     model.mine_worked_upper = pyo.Constraint(
         model.years,
-        rule=lambda _m, year: sum(_m.mine_worked[mine, year] for mine in _m.mines)
-        <= _m.operating_mines_upper,
+        rule=lambda _m, year: (
+            sum(_m.mine_worked[mine, year] for mine in _m.mines)
+            <= _m.operating_mines_upper
+        ),
     )
 
     model.closed_mine_cant_be_worked = pyo.Constraint(
         model.mines,
         model.years,
-        rule=lambda _m, mine, year: _m.mine_worked[mine, year]
-        - _m.mine_open[mine, year]
-        <= 0,
+        rule=lambda _m, mine, year: (
+            _m.mine_worked[mine, year] - _m.mine_open[mine, year] <= 0
+        ),
     )
 
     def _mine_closed_permanently_rule(_m, mine, year):
@@ -192,8 +196,9 @@ def _add_constraints(model):
 def _add_expressions(model):
     model.revenue_by_year = pyo.Expression(
         model.years,
-        rule=lambda _m, year: _m.blended_ore_production[year]
-        * _m.ore_revenue_per_tonne[year],
+        rule=lambda _m, year: (
+            _m.blended_ore_production[year] * _m.ore_revenue_per_tonne[year]
+        ),
     )
 
     def _royalties(_m, year):
